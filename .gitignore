@@ -1,0 +1,6 @@
+.env
+tmpimg.jpg
+videos/*
+tmpvid.mp4
+
+!videos/.gitkeep
