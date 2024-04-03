@@ -1,3 +1,4 @@
-# MarkFrames
+# MDFrames
 
-## Bot for this source code is found here: [https://twitter.com/MarkFnafFrames](https://twitter.com/MarkFnafFrames)
+### A fork of [MarkFrames](https://github.com/GuglioIsStupid/MarkFrames)
+Few changes, used for [this twitter bot](https://twitter.com/MDFramesClips)
