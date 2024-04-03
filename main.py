@@ -41,7 +41,7 @@ except:
 video_dir = "videos/"
 
 tmpimg = "tmpimg.jpg"
-tmpvid = "tmpvid.webm"
+tmpvid = "tmpvid.mp4"
 
 max_attempts = 10
 current_attempts = 0
@@ -49,6 +49,9 @@ current_attempts = 0
 def getVideo():
     # return a video path
     video = random.choice(os.listdir(video_dir))
+    # ignore files that dont end with .mp4
+    while not video.endswith(".mp4"):
+        video = random.choice(os.listdir(video_dir))
     return scriptpath + "/" + video_dir + video, video.split(".")[0]
 
 def getDuration(video):
@@ -66,10 +69,10 @@ def getDuration(video):
     try:
         return float(subprocess.check_output(cmd))
     except Exception as e:
+        print("Error: ", e)
         return getDuration(video)
 
 def getRandomScreenshot(video, duration):
-    # return a random screenshot from a video
     screenshot = random.uniform(0, duration)
     cmd = [
         "ffmpeg",
@@ -85,13 +88,18 @@ def getRandomScreenshot(video, duration):
 
 def getRandomVideoClip(video, duration, clipLength):
     clipStart = random.uniform(0, duration - clipLength)
-    # create .webm file
     cmd = [
         "ffmpeg",
         "-ss", str(clipStart),
         "-i", video,
         "-t", str(clipLength),
-        "-c", "copy",
+        "-r", "24",
+        # mp4 encoding
+        "-c:v", "libx264",
+        "-crf", "23",
+        "-preset", "ultrafast",
+        "-b:v", "2048k",
+
         tmpvid
     ]
     #print(" ".join(cmd))
@@ -157,7 +165,7 @@ while True:
                 current_attempts += 1
                 print("Attempt: ", current_attempts)
                 # delete the screenshot if it exists
-                if os.path.exists(screenshot):
+                if os.path.exists(screenshot or tmpimg or tmpvid):
                     os.remove(screenshot)
                 if current_attempts == max_attempts:
                     print("Max attempts reached. Waiting for next tweet.")
